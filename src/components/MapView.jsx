@@ -50,7 +50,7 @@ function FitBounds({ locationA, locationB, mid }) {
   return null;
 }
 
-export default function MapView({ locationA, locationB, mid, pubs, radius, selectedPub, onSelectPub }) {
+export default function MapView({ locationA, locationB, mid, pubs, radius, selectedPub, onSelectPub, mode }) {
   const center = mid ?? locationA ?? { lat: 51.505, lng: -0.09 };
 
   return (
@@ -99,6 +99,9 @@ export default function MapView({ locationA, locationB, mid, pubs, radius, selec
             {pub.address && <><br />{pub.address}</>}
             {pub.opening_hours && <><br />{pub.opening_hours}</>}
             {pub.website && <><br /><a href={pub.website} target="_blank" rel="noreferrer">Website</a></>}
+            {mode === 'transit' && pub.timeA != null && (
+              <><br /><span style={{fontSize:'0.85em',color:'#555'}}>A: {pub.timeA} min &nbsp; B: {pub.timeB != null ? `${pub.timeB} min` : '—'}</span></>
+            )}
           </Popup>
         </Marker>
       ))}

@@ -185,6 +185,80 @@ header p {
   color: #059669;
 }
 
+.mode-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.mode-toggle button {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  color: #475569;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mode-toggle button:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.mode-toggle button.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+}
+
+.mode-note {
+  font-size: 0.78rem;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 8px 10px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+.results-note {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: block;
+  margin-top: 2px;
+}
+
+.journey-times {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.journey-times span {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.journey-a {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.journey-b {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.journey-worst {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+}
+
 .no-results {
   font-size: 0.85rem;
   color: #64748b;
