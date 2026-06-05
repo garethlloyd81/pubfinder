@@ -4,7 +4,7 @@ import MapView from './components/MapView';
 import PubList from './components/PubList';
 import { geocode } from './utils/geocode';
 import { midpoint } from './utils/midpoint';
-import { fetchPubs } from './utils/overpass';
+import { fetchPubs } from './utils/geoapify';
 import { routePubs } from './utils/tfl';
 import './App.css';
 
