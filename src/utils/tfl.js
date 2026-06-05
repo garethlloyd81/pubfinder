@@ -1,19 +1,15 @@
 const TFL_BASE = 'https://api.tfl.gov.uk/Journey/JourneyResults';
-const TRANSIT_MODES = 'tube,dlr,overground,elizabeth-line,bus,national-rail,tflrail';
+const TRANSIT_MODES = 'tube,dlr,overground,elizabeth-line,bus,national-rail';
 
 async function fetchJourney(from, to) {
   const fromStr = `${from.lat},${from.lng}`;
   const toStr = `${to.lat},${to.lng}`;
   const url = `${TFL_BASE}/${encodeURIComponent(fromStr)}/to/${encodeURIComponent(toStr)}?mode=${TRANSIT_MODES}`;
-  console.log('[TfL] URL:', url);
   const res = await fetch(url);
-  console.log('[TfL] Status:', res.status);
-  if (res.status === 404) { console.log('[TfL] 404 – no journey found'); return null; }
+  if (res.status === 404) return null;
   if (!res.ok) throw new Error(`TfL API error: ${res.status}`);
   const data = await res.json();
-  const journey = data?.journeys?.[0] ?? null;
-  console.log('[TfL] Journey:', journey ? `duration=${journey.duration} legs=${journey.legs?.length}` : 'null (empty journeys array)');
-  return journey;
+  return data?.journeys?.[0] ?? null;
 }
 
 export function parseJourney(journey) {
