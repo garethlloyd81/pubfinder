@@ -8,7 +8,7 @@ import { fetchPubs } from './utils/overpass';
 import { routePubs } from './utils/tfl';
 import './App.css';
 
-const DEFAULT_RADIUS = 1000;
+const DEFAULT_RADIUS = 500;
 
 export default function App() {
   const [locationA, setLocationA] = useState(null);
