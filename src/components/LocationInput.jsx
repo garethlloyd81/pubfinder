@@ -25,11 +25,13 @@ export default function LocationInput({ label, onLocate, disabled }) {
       setSuggestions([]);
       return;
     }
-    getSuggestions(debouncedValue).then((results) => {
-      setSuggestions(results);
-      setShowSuggestions(results.length > 0);
-      setActiveIndex(-1);
-    });
+    getSuggestions(debouncedValue)
+      .then((results) => {
+        setSuggestions(results);
+        setShowSuggestions(results.length > 0);
+        setActiveIndex(-1);
+      })
+      .catch(() => setSuggestions([]));
   }, [debouncedValue]);
 
   useEffect(() => {

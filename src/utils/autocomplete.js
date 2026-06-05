@@ -5,7 +5,7 @@ export async function getSuggestions(query) {
 
   const params = new URLSearchParams({
     q: query,
-    countrycodes: 'gb',
+    countrycode: 'gb',
     limit: 5,
     lang: 'en',
   });
