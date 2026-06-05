@@ -154,8 +154,8 @@ export default function MapView({ locationA, locationB, mid, pubs, radius, selec
 
       {selectedPub && mode === 'transit' && (
         <>
-          <TransitRouteLines journey={selectedPub.journeyA} color="#3b82f6" />
-          <TransitRouteLines journey={selectedPub.journeyB} color="#ef4444" />
+          <TransitRouteLines journey={routeA} color="#3b82f6" />
+          <TransitRouteLines journey={routeB} color="#ef4444" />
         </>
       )}
 

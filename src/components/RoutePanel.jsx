@@ -75,7 +75,7 @@ export default function RoutePanel({ pub, mode, routeA, routeB, routesLoading, o
         {pub.address && <span>{pub.address}</span>}
       </div>
 
-      {routesLoading && <p className="loading">Fetching walking routes…</p>}
+      {routesLoading && <p className="loading">{mode === 'transit' ? 'Fetching transit routes…' : 'Fetching walking routes…'}</p>}
 
       <div className="route-columns">
         <div className="route-column route-column-a">
@@ -87,7 +87,7 @@ export default function RoutePanel({ pub, mode, routeA, routeB, routesLoading, o
             )}
           </h3>
           {mode === 'transit'
-            ? <TransitJourney journey={pub.journeyA} />
+            ? <TransitJourney journey={routeA} />
             : <WalkingJourney route={routeA} />}
         </div>
 
@@ -100,7 +100,7 @@ export default function RoutePanel({ pub, mode, routeA, routeB, routesLoading, o
             )}
           </h3>
           {mode === 'transit'
-            ? <TransitJourney journey={pub.journeyB} />
+            ? <TransitJourney journey={routeB} />
             : <WalkingJourney route={routeB} />}
         </div>
       </div>

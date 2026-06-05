@@ -12,12 +12,13 @@ async function fetchJourney(from, to) {
   return data?.journeys?.[0] ?? null;
 }
 
-function parseJourney(journey) {
+export function parseJourney(journey) {
   if (!journey) return null;
+  if (!Array.isArray(journey.legs)) return null;
   return {
     duration: journey.duration,
     legs: journey.legs.map((leg) => ({
-      summary: leg.instruction?.summary ?? `${leg.mode?.name} to ${leg.arrivalPoint?.commonName ?? ''}`,
+      summary: leg.instruction?.summary ?? `${leg.mode?.name ?? ''} to ${leg.arrivalPoint?.commonName ?? ''}`,
       mode: leg.mode?.name ?? 'walking',
       duration: leg.duration,
       departureName: leg.departurePoint?.commonName ?? '',
@@ -30,32 +31,22 @@ function parseJourney(journey) {
   };
 }
 
-export async function getJourneyTime(from, to) {
-  const journey = await fetchJourney(from, to);
-  return journey?.duration ?? null;
-}
-
 export async function getJourneyDetails(from, to) {
   const journey = await fetchJourney(from, to);
   return parseJourney(journey);
 }
 
+// Returns pubs with timeA/timeB only — full journey details are fetched on demand via getJourneyDetails.
 export async function routePubs(pubs, locationA, locationB, limit = 10) {
   const candidates = pubs.slice(0, limit);
   const results = [];
 
   for (const pub of candidates) {
-    const [journeyA, journeyB] = await Promise.all([
-      fetchJourney(locationA, pub).then(parseJourney).catch(() => null),
-      fetchJourney(locationB, pub).then(parseJourney).catch(() => null),
+    const [timeA, timeB] = await Promise.all([
+      fetchJourney(locationA, pub).then((j) => j?.duration ?? null).catch(() => null),
+      fetchJourney(locationB, pub).then((j) => j?.duration ?? null).catch(() => null),
     ]);
-    results.push({
-      ...pub,
-      journeyA,
-      journeyB,
-      timeA: journeyA?.duration ?? null,
-      timeB: journeyB?.duration ?? null,
-    });
+    results.push({ ...pub, timeA, timeB });
   }
 
   return results.sort((a, b) => {

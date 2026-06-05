@@ -6,7 +6,7 @@ import RoutePanel from './components/RoutePanel';
 import { geocode } from './utils/geocode';
 import { midpoint } from './utils/midpoint';
 import { fetchPubs } from './utils/geoapify';
-import { routePubs } from './utils/tfl';
+import { routePubs, getJourneyDetails } from './utils/tfl';
 import { getWalkingRoute } from './utils/walking';
 import './App.css';
 
@@ -28,20 +28,35 @@ export default function App() {
   const [routesLoading, setRoutesLoading] = useState(false);
 
   useEffect(() => {
-    if (!selectedPub || mode !== 'crowflies' || !locationA || !locationB) {
+    if (!selectedPub || !locationA || !locationB) {
       setRouteA(null);
       setRouteB(null);
       return;
     }
+
     setRoutesLoading(true);
-    Promise.all([
-      getWalkingRoute(locationA, selectedPub).catch(() => null),
-      getWalkingRoute(locationB, selectedPub).catch(() => null),
-    ]).then(([a, b]) => {
-      setRouteA(a);
-      setRouteB(b);
-      setRoutesLoading(false);
-    });
+    setRouteA(null);
+    setRouteB(null);
+
+    if (mode === 'crowflies') {
+      Promise.all([
+        getWalkingRoute(locationA, selectedPub).catch(() => null),
+        getWalkingRoute(locationB, selectedPub).catch(() => null),
+      ]).then(([a, b]) => {
+        setRouteA(a);
+        setRouteB(b);
+        setRoutesLoading(false);
+      });
+    } else {
+      Promise.all([
+        getJourneyDetails(locationA, selectedPub).catch(() => null),
+        getJourneyDetails(locationB, selectedPub).catch(() => null),
+      ]).then(([a, b]) => {
+        setRouteA(a);
+        setRouteB(b);
+        setRoutesLoading(false);
+      });
+    }
   }, [selectedPub, mode, locationA, locationB]);
 
   async function resolveLocation(input) {
