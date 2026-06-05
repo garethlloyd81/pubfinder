@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LocationInput from './components/LocationInput';
 import MapView from './components/MapView';
 import PubList from './components/PubList';
+import RoutePanel from './components/RoutePanel';
 import { geocode } from './utils/geocode';
 import { midpoint } from './utils/midpoint';
 import { fetchPubs } from './utils/geoapify';
 import { routePubs } from './utils/tfl';
+import { getWalkingRoute } from './utils/walking';
 import './App.css';
 
 const DEFAULT_RADIUS = 500;
@@ -17,10 +19,30 @@ export default function App() {
   const [pubs, setPubs] = useState(null);
   const [selectedPub, setSelectedPub] = useState(null);
   const [radius, setRadius] = useState(DEFAULT_RADIUS);
-  const [mode, setMode] = useState('crowflies'); // 'crowflies' | 'transit'
+  const [mode, setMode] = useState('crowflies');
   const [loading, setLoading] = useState(false);
   const [routingProgress, setRoutingProgress] = useState(null);
   const [error, setError] = useState(null);
+  const [routeA, setRouteA] = useState(null);
+  const [routeB, setRouteB] = useState(null);
+  const [routesLoading, setRoutesLoading] = useState(false);
+
+  useEffect(() => {
+    if (!selectedPub || mode !== 'crowflies' || !locationA || !locationB) {
+      setRouteA(null);
+      setRouteB(null);
+      return;
+    }
+    setRoutesLoading(true);
+    Promise.all([
+      getWalkingRoute(locationA, selectedPub).catch(() => null),
+      getWalkingRoute(locationB, selectedPub).catch(() => null),
+    ]).then(([a, b]) => {
+      setRouteA(a);
+      setRouteB(b);
+      setRoutesLoading(false);
+    });
+  }, [selectedPub, mode, locationA, locationB]);
 
   async function resolveLocation(input) {
     if (typeof input === 'string') return await geocode(input);
@@ -96,6 +118,19 @@ export default function App() {
     if (locationA && locationB) handleSearch(locationA, locationB, radius, newMode);
   }
 
+  function handleSelectPub(pub) {
+    setSelectedPub(pub);
+  }
+
+  function handleBack() {
+    setSelectedPub(null);
+    setRouteA(null);
+    setRouteB(null);
+  }
+
+  const showRoutePanel = !!selectedPub;
+  const disabled = loading || !!routingProgress;
+
   return (
     <div className="app">
       <header>
@@ -105,56 +140,73 @@ export default function App() {
 
       <div className="layout">
         <aside className="sidebar">
-          <LocationInput label="Person A" onLocate={handleLocateA} disabled={loading || !!routingProgress} />
-          <LocationInput label="Person B" onLocate={handleLocateB} disabled={loading || !!routingProgress} />
+          {!showRoutePanel && (
+            <>
+              <LocationInput label="Person A" onLocate={handleLocateA} disabled={disabled} />
+              <LocationInput label="Person B" onLocate={handleLocateB} disabled={disabled} />
 
-          <div className="mode-toggle">
-            <button
-              className={mode === 'crowflies' ? 'active' : ''}
-              onClick={() => handleModeChange('crowflies')}
-            >
-              🐦 As the crow flies
-            </button>
-            <button
-              className={mode === 'transit' ? 'active' : ''}
-              onClick={() => handleModeChange('transit')}
-            >
-              🚇 Public transport
-            </button>
-          </div>
+              <div className="mode-toggle">
+                <button
+                  className={mode === 'crowflies' ? 'active' : ''}
+                  onClick={() => handleModeChange('crowflies')}
+                >
+                  🐦 As the crow flies
+                </button>
+                <button
+                  className={mode === 'transit' ? 'active' : ''}
+                  onClick={() => handleModeChange('transit')}
+                >
+                  🚇 Public transport
+                </button>
+              </div>
 
-          {mode === 'transit' && (
-            <p className="mode-note">
-              Uses TfL Journey Planner. Works within Greater London.
-              Ranked by fairness — minimises the longer of the two journeys.
-            </p>
+              {mode === 'transit' && (
+                <p className="mode-note">
+                  Uses TfL Journey Planner. Works within Greater London.
+                  Ranked by fairness — minimises the longer of the two journeys.
+                </p>
+              )}
+
+              <div className="radius-control">
+                <label>Search radius: <strong>{(radius / 1000).toFixed(1)} km</strong></label>
+                <input
+                  type="range"
+                  min={250}
+                  max={5000}
+                  step={250}
+                  value={radius}
+                  onChange={handleRadiusChange}
+                />
+              </div>
+            </>
           )}
 
-          <div className="radius-control">
-            <label>Search radius: <strong>{(radius / 1000).toFixed(1)} km</strong></label>
-            <input
-              type="range"
-              min={250}
-              max={5000}
-              step={250}
-              value={radius}
-              onChange={handleRadiusChange}
-            />
-          </div>
-
           <div className="sidebar-scroll">
-            {error && <p className="error">{error}</p>}
-            {loading && <p className="loading">Searching…</p>}
-            {routingProgress && <p className="loading">{routingProgress}</p>}
-
-            {pubs && (
-              <div className="results-header">
-                <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
-                {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
-              </div>
+            {!showRoutePanel && (
+              <>
+                {error && <p className="error">{error}</p>}
+                {loading && <p className="loading">Searching…</p>}
+                {routingProgress && <p className="loading">{routingProgress}</p>}
+                {pubs && (
+                  <div className="results-header">
+                    <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
+                    {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
+                  </div>
+                )}
+                <PubList pubs={pubs} onSelect={handleSelectPub} selected={selectedPub} mode={mode} />
+              </>
             )}
 
-            <PubList pubs={pubs} onSelect={setSelectedPub} selected={selectedPub} mode={mode} />
+            {showRoutePanel && (
+              <RoutePanel
+                pub={selectedPub}
+                mode={mode}
+                routeA={routeA}
+                routeB={routeB}
+                routesLoading={routesLoading}
+                onBack={handleBack}
+              />
+            )}
           </div>
         </aside>
 
@@ -166,8 +218,10 @@ export default function App() {
             pubs={pubs}
             radius={radius}
             selectedPub={selectedPub}
-            onSelectPub={setSelectedPub}
+            onSelectPub={handleSelectPub}
             mode={mode}
+            routeA={routeA}
+            routeB={routeB}
           />
         </main>
       </div>

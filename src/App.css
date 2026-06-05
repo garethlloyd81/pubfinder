@@ -312,3 +312,146 @@ header p {
   text-align: center;
   padding: 12px;
 }
+
+/* Route Panel */
+.route-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+.back-btn:hover { text-decoration: underline; }
+
+.route-pub-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.route-pub-info strong { font-size: 1rem; }
+.route-pub-info span { font-size: 0.8rem; color: #64748b; }
+
+.route-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.route-column h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.person-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-a { background: #3b82f6; }
+.dot-b { background: #ef4444; }
+
+.route-total {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 99px;
+  color: #475569;
+}
+
+.journey-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.journey-leg {
+  padding: 6px 8px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 3px solid #cbd5e1;
+  font-size: 0.8rem;
+}
+
+.leg-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.leg-icon { flex-shrink: 0; }
+
+.leg-summary {
+  flex: 1;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+.leg-duration {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.leg-stops {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  font-size: 0.75rem;
+  color: #64748b;
+  padding-left: 20px;
+}
+
+.leg-arrow { color: #94a3b8; }
+
+.walk-summary {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  padding: 4px 0;
+}
+
+.walk-step {
+  display: flex;
+  gap: 8px;
+  font-size: 0.8rem;
+  padding: 4px 0;
+  border-bottom: 1px solid #f1f5f9;
+  line-height: 1.3;
+}
+
+.step-distance {
+  flex-shrink: 0;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  min-width: 36px;
+  padding-top: 1px;
+}
+
+.route-unavailable {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+}
