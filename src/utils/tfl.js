@@ -5,11 +5,15 @@ async function fetchJourney(from, to) {
   const fromStr = `${from.lat},${from.lng}`;
   const toStr = `${to.lat},${to.lng}`;
   const url = `${TFL_BASE}/${encodeURIComponent(fromStr)}/to/${encodeURIComponent(toStr)}?mode=${TRANSIT_MODES}`;
+  console.log('[TfL] URL:', url);
   const res = await fetch(url);
-  if (res.status === 404) return null;
+  console.log('[TfL] Status:', res.status);
+  if (res.status === 404) { console.log('[TfL] 404 – no journey found'); return null; }
   if (!res.ok) throw new Error(`TfL API error: ${res.status}`);
   const data = await res.json();
-  return data?.journeys?.[0] ?? null;
+  const journey = data?.journeys?.[0] ?? null;
+  console.log('[TfL] Journey:', journey ? `duration=${journey.duration} legs=${journey.legs?.length}` : 'null (empty journeys array)');
+  return journey;
 }
 
 export function parseJourney(journey) {
