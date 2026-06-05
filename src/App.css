@@ -46,6 +46,15 @@ header p {
   background: white;
   border-right: 1px solid #e2e8f0;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: visible;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;

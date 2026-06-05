@@ -142,18 +142,20 @@ export default function App() {
             />
           </div>
 
-          {error && <p className="error">{error}</p>}
-          {loading && <p className="loading">Searching…</p>}
-          {routingProgress && <p className="loading">{routingProgress}</p>}
+          <div className="sidebar-scroll">
+            {error && <p className="error">{error}</p>}
+            {loading && <p className="loading">Searching…</p>}
+            {routingProgress && <p className="loading">{routingProgress}</p>}
 
-          {pubs && (
-            <div className="results-header">
-              <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
-              {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
-            </div>
-          )}
+            {pubs && (
+              <div className="results-header">
+                <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
+                {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
+              </div>
+            )}
 
-          <PubList pubs={pubs} onSelect={setSelectedPub} selected={selectedPub} mode={mode} />
+            <PubList pubs={pubs} onSelect={setSelectedPub} selected={selectedPub} mode={mode} />
+          </div>
         </aside>
 
         <main className="map-container">
