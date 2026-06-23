@@ -21,7 +21,7 @@ export default function LocationInput({ label, onLocate, disabled }) {
   const debouncedValue = useDebounce(value, 300);
 
   useEffect(() => {
-    if (!debouncedValue || debouncedValue.length < 3) {
+    if (!debouncedValue || debouncedValue.length < 2) {
       setSuggestions([]);
       return;
     }
@@ -84,6 +84,8 @@ export default function LocationInput({ label, onLocate, disabled }) {
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
         setValue('My location');
+        setSuggestions([]);
+        setShowSuggestions(false);
         onLocate({ lat, lng, display: 'My location' });
         setLoading(false);
       },

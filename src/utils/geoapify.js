@@ -1,6 +1,10 @@
 const BASE_URL = 'https://api.geoapify.com/v2/places';
 const KEY = import.meta.env.VITE_GEOAPIFY_KEY;
 
+function isPositive(val) {
+  return !!val && val !== 'no';
+}
+
 export async function fetchPubs(lat, lng, radiusMeters = 500) {
   const params = new URLSearchParams({
     categories: 'catering.pub,catering.bar',
@@ -19,6 +23,7 @@ export async function fetchPubs(lat, lng, radiusMeters = 500) {
 
   return data.features.map((f) => {
     const p = f.properties;
+    const raw = p.datasource?.raw ?? {};
     return {
       id: p.place_id,
       lat: f.geometry.coordinates[1],
@@ -28,6 +33,12 @@ export async function fetchPubs(lat, lng, radiusMeters = 500) {
       phone: p.phone ?? null,
       website: p.website ?? null,
       opening_hours: p.opening_hours ?? null,
+      features: {
+        outdoor_seating: isPositive(raw.outdoor_seating),
+        real_ale: isPositive(raw.real_ale),
+        wheelchair: isPositive(raw.wheelchair),
+        air_conditioning: isPositive(raw.air_conditioning),
+      },
     };
   });
 }

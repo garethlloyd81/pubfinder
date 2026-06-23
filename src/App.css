@@ -462,6 +462,50 @@ header p {
   padding-top: 1px;
 }
 
+.feature-filters label {
+  display: block;
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.feature-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.feature-filter-pills button {
+  padding: 5px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 99px;
+  background: white;
+  color: #475569;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.feature-filter-pills button:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.feature-filter-pills button.active {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.feature-filters-note {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
 .route-unavailable {
   font-size: 0.8rem;
   color: #94a3b8;

@@ -12,6 +12,13 @@ import './App.css';
 
 const DEFAULT_RADIUS = 500;
 
+const FEATURE_OPTIONS = [
+  { key: 'outdoor_seating', label: '☀️ Garden' },
+  { key: 'real_ale', label: '🍺 Real ale' },
+  { key: 'wheelchair', label: '♿ Accessible' },
+  { key: 'air_conditioning', label: '❄️ Air con' },
+];
+
 export default function App() {
   const [locationA, setLocationA] = useState(null);
   const [locationB, setLocationB] = useState(null);
@@ -26,6 +33,7 @@ export default function App() {
   const [routeA, setRouteA] = useState(null);
   const [routeB, setRouteB] = useState(null);
   const [routesLoading, setRoutesLoading] = useState(false);
+  const [features, setFeatures] = useState({ outdoor_seating: false, real_ale: false, wheelchair: false, air_conditioning: false });
 
   useEffect(() => {
     if (!selectedPub || !locationA || !locationB) {
@@ -143,8 +151,15 @@ export default function App() {
     setRouteB(null);
   }
 
+  function toggleFeature(key) {
+    setFeatures(prev => ({ ...prev, [key]: !prev[key] }));
+  }
+
   const showRoutePanel = !!selectedPub;
   const disabled = loading || !!routingProgress;
+  const filteredPubs = pubs
+    ? pubs.filter(pub => FEATURE_OPTIONS.every(({ key }) => !features[key] || pub.features?.[key] === true))
+    : null;
 
   return (
     <div className="app">
@@ -193,6 +208,22 @@ export default function App() {
                   onChange={handleRadiusChange}
                 />
               </div>
+
+              <div className="feature-filters">
+                <label>Must have:</label>
+                <div className="feature-filter-pills">
+                  {FEATURE_OPTIONS.map(({ key, label }) => (
+                    <button
+                      key={key}
+                      className={features[key] ? 'active' : ''}
+                      onClick={() => toggleFeature(key)}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <p className="feature-filters-note">Based on OpenStreetMap data — coverage varies by pub.</p>
+              </div>
             </>
           )}
         </aside>
@@ -202,7 +233,7 @@ export default function App() {
             locationA={locationA}
             locationB={locationB}
             mid={mid}
-            pubs={pubs}
+            pubs={filteredPubs}
             radius={radius}
             selectedPub={selectedPub}
             onSelectPub={handleSelectPub}
@@ -220,11 +251,11 @@ export default function App() {
               {routingProgress && <p className="loading">{routingProgress}</p>}
               {pubs && (
                 <div className="results-header">
-                  <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
+                  <h2>{filteredPubs.length} pub{filteredPubs.length !== 1 ? 's' : ''} found</h2>
                   {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
                 </div>
               )}
-              <PubList pubs={pubs} onSelect={handleSelectPub} selected={selectedPub} mode={mode} />
+              <PubList pubs={filteredPubs} onSelect={handleSelectPub} selected={selectedPub} mode={mode} />
             </>
           )}
 
