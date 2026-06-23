@@ -13,7 +13,7 @@ import './App.css';
 const DEFAULT_RADIUS = 500;
 
 const FEATURE_OPTIONS = [
-  { key: 'outdoor_seating', label: '☀️ Garden' },
+  { key: 'outdoor_seating', label: '☀️ Outdoor seating' },
   { key: 'real_ale', label: '🍺 Real ale' },
   { key: 'wheelchair', label: '♿ Accessible' },
   { key: 'air_conditioning', label: '❄️ Air con' },
