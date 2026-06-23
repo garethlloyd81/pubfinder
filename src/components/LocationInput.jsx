@@ -10,7 +10,7 @@ function useDebounce(value, delay) {
   return debounced;
 }
 
-export default function LocationInput({ label, onLocate, disabled }) {
+export default function LocationInput({ label, onLocate, disabled, showLocate = true }) {
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -123,9 +123,11 @@ export default function LocationInput({ label, onLocate, disabled }) {
         >
           Go
         </button>
-        <button onClick={useMyLocation} disabled={disabled || loading} title="Use my location">
-          📍
-        </button>
+        {showLocate && (
+          <button onClick={useMyLocation} disabled={disabled || loading} title="Use my location">
+            📍
+          </button>
+        )}
       </div>
 
       {showSuggestions && suggestions.length > 0 && (

@@ -164,14 +164,14 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>🍺 Pub Finder</h1>
-        <p>Find a pub halfway between two people</p>
+        <h1>🍻 Pubs for Buds</h1>
+        <p>Find a pub halfway between you and a friend</p>
       </header>
 
       <div className="layout">
         <aside className="controls-panel">
-          <LocationInput label="Person A" onLocate={handleLocateA} disabled={disabled} />
-          <LocationInput label="Person B" onLocate={handleLocateB} disabled={disabled} />
+          <LocationInput label="Where are you?" onLocate={handleLocateA} disabled={disabled} />
+          <LocationInput label="Where is your bud?" onLocate={handleLocateB} disabled={disabled} showLocate={false} />
 
           {!showRoutePanel && (
             <>
