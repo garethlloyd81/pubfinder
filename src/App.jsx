@@ -154,12 +154,12 @@ export default function App() {
       </header>
 
       <div className="layout">
-        <aside className="sidebar">
+        <aside className="controls-panel">
+          <LocationInput label="Person A" onLocate={handleLocateA} disabled={disabled} />
+          <LocationInput label="Person B" onLocate={handleLocateB} disabled={disabled} />
+
           {!showRoutePanel && (
             <>
-              <LocationInput label="Person A" onLocate={handleLocateA} disabled={disabled} />
-              <LocationInput label="Person B" onLocate={handleLocateB} disabled={disabled} />
-
               <div className="mode-toggle">
                 <button
                   className={mode === 'crowflies' ? 'active' : ''}
@@ -195,34 +195,6 @@ export default function App() {
               </div>
             </>
           )}
-
-          <div className="sidebar-scroll">
-            {!showRoutePanel && (
-              <>
-                {error && <p className="error">{error}</p>}
-                {loading && <p className="loading">Searching…</p>}
-                {routingProgress && <p className="loading">{routingProgress}</p>}
-                {pubs && (
-                  <div className="results-header">
-                    <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
-                    {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
-                  </div>
-                )}
-                <PubList pubs={pubs} onSelect={handleSelectPub} selected={selectedPub} mode={mode} />
-              </>
-            )}
-
-            {showRoutePanel && (
-              <RoutePanel
-                pub={selectedPub}
-                mode={mode}
-                routeA={routeA}
-                routeB={routeB}
-                routesLoading={routesLoading}
-                onBack={handleBack}
-              />
-            )}
-          </div>
         </aside>
 
         <main className="map-container">
@@ -239,6 +211,34 @@ export default function App() {
             routeB={routeB}
           />
         </main>
+
+        <section className="results-panel">
+          {!showRoutePanel && (
+            <>
+              {error && <p className="error">{error}</p>}
+              {loading && <p className="loading">Searching…</p>}
+              {routingProgress && <p className="loading">{routingProgress}</p>}
+              {pubs && (
+                <div className="results-header">
+                  <h2>{pubs.length} pub{pubs.length !== 1 ? 's' : ''} found</h2>
+                  {mode === 'transit' && <span className="results-note">Sorted by fairest journey</span>}
+                </div>
+              )}
+              <PubList pubs={pubs} onSelect={handleSelectPub} selected={selectedPub} mode={mode} />
+            </>
+          )}
+
+          {showRoutePanel && (
+            <RoutePanel
+              pub={selectedPub}
+              mode={mode}
+              routeA={routeA}
+              routeB={routeB}
+              routesLoading={routesLoading}
+              onBack={handleBack}
+            />
+          )}
+        </section>
       </div>
     </div>
   );
