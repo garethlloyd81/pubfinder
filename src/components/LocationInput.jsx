@@ -18,11 +18,16 @@ export default function LocationInput({ label, onLocate, disabled }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
+  const suppressAutocomplete = useRef(false);
   const debouncedValue = useDebounce(value, 300);
 
   useEffect(() => {
     if (!debouncedValue || debouncedValue.length < 2) {
       setSuggestions([]);
+      return;
+    }
+    if (suppressAutocomplete.current) {
+      suppressAutocomplete.current = false;
       return;
     }
     getSuggestions(debouncedValue)
@@ -45,6 +50,7 @@ export default function LocationInput({ label, onLocate, disabled }) {
   }, []);
 
   function selectSuggestion(suggestion) {
+    suppressAutocomplete.current = true;
     setValue(suggestion.label);
     setSuggestions([]);
     setShowSuggestions(false);
@@ -83,6 +89,7 @@ export default function LocationInput({ label, onLocate, disabled }) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
+        suppressAutocomplete.current = true;
         setValue('My location');
         setSuggestions([]);
         setShowSuggestions(false);
@@ -103,7 +110,7 @@ export default function LocationInput({ label, onLocate, disabled }) {
         <input
           type="text"
           value={value}
-          onChange={(e) => { setValue(e.target.value); setError(null); }}
+          onChange={(e) => { suppressAutocomplete.current = false; setValue(e.target.value); setError(null); }}
           onKeyDown={handleKeyDown}
           onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
           placeholder="Enter a town, city or postcode"
