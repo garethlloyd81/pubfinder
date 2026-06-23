@@ -1,7 +1,7 @@
 const PHOTON_URL = 'https://photon.komoot.io/api/';
 
 export async function getSuggestions(query) {
-  if (!query || query.length < 3) return [];
+  if (!query || query.length < 2) return [];
 
   const params = new URLSearchParams({
     q: query,
